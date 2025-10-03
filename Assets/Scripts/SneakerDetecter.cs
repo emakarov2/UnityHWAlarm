@@ -5,9 +5,9 @@ public class SneakerDetecter : MonoBehaviour
 {
     [SerializeField] private Collider[] _houseTriggers;
 
-    public event Action<bool> InfiltrationStatusChanged;
-
     private bool _hasInfiltrators = false;
+
+    public event Action<bool> InfiltrationStatusChanged;
 
     private void Update()
     {

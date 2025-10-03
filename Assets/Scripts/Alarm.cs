@@ -20,11 +20,15 @@ public class Alarm : MonoBehaviour
         _detecter.InfiltrationStatusChanged += OnInfiltrationStatusChanged;
     }
 
-
     private void Update()
     {
         UpdateVolume();
         SwitchPlaying();
+    }
+
+    private void OnDisable()
+    {
+        _detecter.InfiltrationStatusChanged -= OnInfiltrationStatusChanged;
     }
 
     private void OnInfiltrationStatusChanged(bool isActive)
