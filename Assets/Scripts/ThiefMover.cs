@@ -7,7 +7,6 @@ public class ThiefMover : MonoBehaviour
 
     private float _reachPositionDistance = 0.1f;
 
-
     private int _currentWaypointIndex = 0;
 
     private void Update()

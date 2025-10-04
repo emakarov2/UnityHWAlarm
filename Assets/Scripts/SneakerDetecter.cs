@@ -3,46 +3,41 @@ using UnityEngine;
 
 public class SneakerDetecter : MonoBehaviour
 {
-    [SerializeField] private Collider[] _houseTriggers;
+    [SerializeField] private Collider _houseTrigger;
 
-    private bool _hasInfiltrators = false;
+    private int _infiltratorsCount = 0;
+    private int _minInfiltratorsToAlarm = 1;
+
+    private bool _isInfiltrated;
 
     public event Action<bool> InfiltrationStatusChanged;
 
-    private void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        CheckForSneakers();
-    }
-
-    private void CheckForSneakers()
-    {
-        bool isSneakersFound = false;
-
-        foreach (Collider triggerCollider in _houseTriggers)
+        if (other.TryGetComponent<Sneaker>(out _))
         {
-            Collider[] collidersInHouse = Physics.OverlapBox
-                (
-                triggerCollider.bounds.center,
-                triggerCollider.bounds.extents,
-                triggerCollider.transform.rotation
-                );
-
-
-            foreach (Collider colliderInHouse in collidersInHouse)
-            {
-                if (colliderInHouse.TryGetComponent<Sneaker>(out _))
-                {
-                    isSneakersFound = true;
-                    break;
-                }
-            }
+            _infiltratorsCount++;
         }
 
-        if (isSneakersFound != _hasInfiltrators)
+        if (_infiltratorsCount == _minInfiltratorsToAlarm)
         {
-            _hasInfiltrators = isSneakersFound;
+            _isInfiltrated = true;
+     
+            InfiltrationStatusChanged?.Invoke(_isInfiltrated);
+        }
+    }
 
-            InfiltrationStatusChanged?.Invoke(_hasInfiltrators);
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.TryGetComponent<Sneaker>(out _))
+        {
+            _infiltratorsCount--;
+        }
+
+        if (_infiltratorsCount < _minInfiltratorsToAlarm)
+        {
+            _isInfiltrated = false;
+            InfiltrationStatusChanged?.Invoke(_isInfiltrated);
         }
     }
 }
